@@ -6,16 +6,17 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="Super Fit Viewer"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.DisplayActivity"
             android:configChanges="orientation"
-            android:label="super fit"
+            android:label="Super Fit Viewer"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
 
