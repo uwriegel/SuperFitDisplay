@@ -32,7 +32,11 @@ class DisplayActivity() : AppCompatActivity() {
         })
     }
 
-    private class PagerAdapter(fm: FragmentManager?)
+    fun getMapsFragment(): MapsFragment {
+        return (pager.adapter as PagerAdapter).getFragmentForPosition(pager, 1) as MapsFragment
+    }
+
+    private inner class PagerAdapter(fm: FragmentManager?)
         : FragmentPagerAdapter(fm) {
 
         override fun getCount(): Int {
@@ -44,6 +48,16 @@ class DisplayActivity() : AppCompatActivity() {
                 0 -> return DisplayFragment()
                 else -> return MapsFragment()
             }
+        }
+
+        fun getFragmentForPosition(viewPager: ViewPager, position: Int): Fragment {
+            val tag = makeFragmentName(viewPager.getId(), getItemId(position))
+            val fragment = supportFragmentManager.findFragmentByTag(tag)
+            return fragment
+        }
+
+        private fun makeFragmentName(containerViewId: Int, id: Long): String {
+            return "android:switcher:$containerViewId:$id"
         }
     }
 

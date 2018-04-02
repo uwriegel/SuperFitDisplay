@@ -16,7 +16,7 @@ var Connection = (function () {
         } catch{}
     }
 
-    function initialize(onEvent: (data: SensorEvent) => void) {
+    function initialize(onEvent: (data: DataEvent) => void) {
         const webSocket = new WebSocket("ws://localhost:9865/")
         webSocket.onmessage = e => onEvent(JSON.parse(e.data))
     }

@@ -1,11 +1,9 @@
 package eu.selfhost.riegel.superfitdisplay.ui
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.location.Location
 import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -16,7 +14,6 @@ import eu.selfhost.riegel.superfitdisplay.R
 import eu.selfhost.riegel.superfitdisplay.maps.LocationSetter
 import eu.selfhost.riegel.superfitdisplay.maps.MapView
 import org.mapsforge.core.model.LatLong
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.rotation.RotateView
 import org.mapsforge.map.android.util.AndroidPreferences
 import org.mapsforge.map.android.util.AndroidUtil
@@ -48,10 +45,6 @@ class MapsFragment : Fragment(), LocationSetter {
         createLayers()
 
         mapView!!.setLocationSetter(this)
-
-        locationManager = activity!!.getSystemService(Activity.LOCATION_SERVICE) as LocationManager
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, locationListener)
-
         return layout
     }
 
@@ -63,6 +56,10 @@ class MapsFragment : Fragment(), LocationSetter {
 
     fun setLocationCenter() {
         mapView!!.onCenter()
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     override fun onPause() {
@@ -78,6 +75,19 @@ class MapsFragment : Fragment(), LocationSetter {
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    fun onLocation(location: Location) {
+        recentLocation = location
+        if (setLocation) {
+            if (mapView != null) {
+                mapView!!.setCenter(LatLong(location.latitude, location.longitude))
+                if (::center.isInitialized)
+                    mapView!!.layerManager!!.layers.remove(center)
+                center = LocationMarker(LatLong(location.latitude, location.longitude))
+                mapView!!.layerManager!!.layers.add(center)
+            }
+        }
     }
 
     private fun createTileCaches() {
@@ -109,43 +119,9 @@ class MapsFragment : Fragment(), LocationSetter {
         return externalStorageFiles.map { getRootOfExternalStorage(it, context) }.filter { !it.contains("emulated") }.first()
     }
 
-    private val locationListener = object : LocationListener {
-        override fun onLocationChanged(location: Location) {
-            if (location.hasBearing()) {
-                val affe = 2
-                val aff = affe +8
-            }
-            recentLocation = location
-            if (setLocation) {
-                if (mapView != null) {
-                    mapView!!.setCenter(LatLong(location.latitude, location.longitude))
-                    if (::center.isInitialized)
-                        mapView!!.layerManager!!.layers.remove(center)
-                    center = LocationMarker(LatLong(location.latitude, location.longitude))
-                    mapView!!.layerManager!!.layers.add(center)
-                }
-            }
-        }
-
-        override fun onProviderEnabled(p0: String?) {
-        }
-
-        override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
-        }
-
-        override fun onProviderDisabled(p0: String?) {
-        }
-    }
-
-    companion object {
-        val LOCATION_REFRESH_TIME = 1000L
-        val LOCATION_REFRESH_DISTANCE = 0.0F
-    }
-
     private lateinit var preferencesFacade: PreferencesFacade
     private var mapView: MapView? = null
     private var tileCaches: MutableList<TileCache> = ArrayList()
-    private lateinit var locationManager: LocationManager
     private var setLocation = true
     private var recentLocation: Location? = null
 

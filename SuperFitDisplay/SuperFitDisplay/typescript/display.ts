@@ -1,8 +1,16 @@
+declare var Native: any
 
-declare class SensorEvent {
+declare class DataEvent {
     data: SensorData
     gpsActive?: Boolean
+    location?: LocationData
 }
+
+declare class LocationData {
+    longitude: Number
+    latitude: Number
+}
+
 
 declare class SensorData {
     heartRate: number
@@ -14,7 +22,20 @@ declare class SensorData {
     averageSpeed: number
 }
 
-function onSensorData(evt: SensorEvent) {
+function onSensorData(evt: DataEvent) {
+
+
+
+    if (evt.location) {
+        var aff = evt.location.longitude
+        var affe = evt.location.latitude
+        console.log(`${aff} - ${affe}`)
+
+        Native.onLocation(aff, affe)
+    }
+        
+
+
     heartRateElement.innerText = evt.data.heartRate.toString()
     speedElement.innerText = evt.data.speed.toFixed(1)
     distanceElement.innerText = evt.data.distance.toFixed(2)

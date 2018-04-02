@@ -1,11 +1,15 @@
 package eu.selfhost.riegel.superfitdisplay.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
+import android.view.SoundEffectConstants
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import eu.selfhost.riegel.superfitdisplay.R
@@ -26,6 +30,17 @@ class DisplayFragment : Fragment() {
         displayWebView.webChromeClient = WebChromeClient()
 
         displayWebView.isHapticFeedbackEnabled = true
+
+        displayWebView.addJavascriptInterface(object {
+            @JavascriptInterface
+            fun onLocation(longitude: Double, latitude: Double) {
+                val location = Location("")
+                location.longitude = longitude
+                location.latitude = latitude
+                (activity as DisplayActivity).getMapsFragment().onLocation(location)
+            }
+        }, "Native")
+
         displayWebView.loadUrl("file:///android_asset/display.html")
 
         return layout
