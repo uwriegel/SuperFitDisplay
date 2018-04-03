@@ -3,7 +3,6 @@ package eu.selfhost.riegel.superfitdisplay.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
-import android.location.LocationListener
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -44,18 +43,14 @@ class MapsFragment : Fragment(), LocationSetter {
         return layout
     }
 
-    override fun changeValue(setLocation: Boolean) {
-        this.setLocation = setLocation
-        if (this.setLocation && recentLocation != null)
+    override fun changeValue(followLocation: Boolean) {
+        this.followLocation = followLocation
+        if (this.followLocation && recentLocation != null)
             mapView!!.setCenter(LatLong(recentLocation!!.latitude, recentLocation!!.longitude))
     }
 
     fun setLocationCenter() {
         mapView!!.onCenter()
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     override fun onPause() {
@@ -69,20 +64,15 @@ class MapsFragment : Fragment(), LocationSetter {
         super.onDestroyView()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     fun onLocation(location: Location) {
         recentLocation = location
-        if (setLocation) {
-            if (mapView != null) {
+        if (mapView != null) {
+            if (followLocation)
                 mapView!!.setCenter(LatLong(location.latitude, location.longitude))
-                if (::center.isInitialized)
-                    mapView!!.layerManager!!.layers.remove(center)
-                center = LocationMarker(LatLong(location.latitude, location.longitude))
-                mapView!!.layerManager!!.layers.add(center)
-            }
+            if (::center.isInitialized)
+                mapView!!.layerManager!!.layers.remove(center)
+            center = LocationMarker(LatLong(location.latitude, location.longitude))
+            mapView!!.layerManager!!.layers.add(center)
         }
     }
 
@@ -118,7 +108,7 @@ class MapsFragment : Fragment(), LocationSetter {
     private lateinit var preferencesFacade: PreferencesFacade
     private var mapView: MapView? = null
     private var tileCaches: MutableList<TileCache> = ArrayList()
-    private var setLocation = true
+    private var followLocation = true
     private var recentLocation: Location? = null
 
     private lateinit var center: LocationMarker
