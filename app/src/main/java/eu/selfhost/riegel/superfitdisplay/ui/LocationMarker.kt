@@ -25,7 +25,7 @@ class LocationMarker(private val center: LatLong) : Layer() {
             canvas.drawCircle(x1, y1, 16, paint)
             paint.strokeWidth = 16F
             paint.setStyle(Style.STROKE)
-            paint.color = AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK)
+            paint.color = AndroidGraphicFactory.INSTANCE.createColor(Color.BLUE)
             canvas.drawCircle(x1, y1, 20, paint)
         }
     }

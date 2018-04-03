@@ -1,5 +1,5 @@
 package eu.selfhost.riegel.superfitdisplay.maps
 
 interface LocationSetter {
-    fun changeValue(setLocation: Boolean)
+    fun changeValue(followLocation: Boolean)
 }

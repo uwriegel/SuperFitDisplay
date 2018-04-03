@@ -12,7 +12,9 @@ import android.view.ViewGroup
 import eu.selfhost.riegel.superfitdisplay.R
 import eu.selfhost.riegel.superfitdisplay.maps.LocationSetter
 import eu.selfhost.riegel.superfitdisplay.maps.MapView
+import eu.selfhost.riegel.superfitdisplay.maps.TrackingLine
 import org.mapsforge.core.model.LatLong
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.rotation.RotateView
 import org.mapsforge.map.android.util.AndroidPreferences
 import org.mapsforge.map.android.util.AndroidUtil
@@ -40,6 +42,7 @@ class MapsFragment : Fragment(), LocationSetter {
         createLayers()
 
         mapView!!.setLocationSetter(this)
+        mapView!!.layerManager!!.layers.add(currentTrack)
         return layout
     }
 
@@ -67,11 +70,17 @@ class MapsFragment : Fragment(), LocationSetter {
     fun onLocation(location: Location) {
         recentLocation = location
         if (mapView != null) {
+
+            val latLong = LatLong(location.latitude, location.longitude)
+
+            currentTrack.latLongs.add(latLong)
+            currentTrack.requestRedraw()
+
             if (followLocation)
-                mapView!!.setCenter(LatLong(location.latitude, location.longitude))
+                mapView!!.setCenter(latLong)
             if (::center.isInitialized)
                 mapView!!.layerManager!!.layers.remove(center)
-            center = LocationMarker(LatLong(location.latitude, location.longitude))
+            center = LocationMarker(latLong)
             mapView!!.layerManager!!.layers.add(center)
         }
     }
@@ -110,6 +119,7 @@ class MapsFragment : Fragment(), LocationSetter {
     private var tileCaches: MutableList<TileCache> = ArrayList()
     private var followLocation = true
     private var recentLocation: Location? = null
+    private val currentTrack = TrackingLine(AndroidGraphicFactory.INSTANCE)
 
     private lateinit var center: LocationMarker
 }
