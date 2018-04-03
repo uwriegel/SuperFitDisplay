@@ -36,10 +36,6 @@ class MapsFragment : Fragment(), LocationSetter {
         mapView!!.model.init(this.preferencesFacade)
         mapView!!.isClickable = true
         mapView!!.mapScaleBar!!.isVisible = true // false
-        mapView!!.setBuiltInZoomControls(false) // false
-        mapView!!.mapZoomControls.isAutoHide = true
-        mapView!!.mapZoomControls.setZoomLevelMin(0.toByte())
-        mapView!!.mapZoomControls.setZoomLevelMax(24.toByte())
 
         createTileCaches()
         createLayers()

@@ -1,12 +1,10 @@
 package eu.selfhost.riegel.superfitdisplay.ui
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
-import android.view.SoundEffectConstants
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface

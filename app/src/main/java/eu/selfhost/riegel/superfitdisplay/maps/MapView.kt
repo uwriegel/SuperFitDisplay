@@ -105,7 +105,7 @@ class MapView @JvmOverloads constructor(context: Context, attributeSet: Attribut
         if (this.mapScaleBar != null) {
             this.mapScaleBar!!.destroy()
         }
-        this.mapZoomControls.destroy()
+        //this.mapZoomControls.destroy()
         this.getModel().mapViewPosition.destroy()
     }
 
@@ -177,11 +177,8 @@ class MapView @JvmOverloads constructor(context: Context, attributeSet: Attribut
         // Request layout for child views (besides zoom controls)
         val count = childCount
         for (i in 0 until count) {
-            val child = getChildAt(i)
-            if (child != this.mapZoomControls) {
-                layoutHandler.post { requestLayout() }
-                break
-            }
+            layoutHandler.post { requestLayout() }
+            break
         }
     }
 
@@ -196,38 +193,10 @@ class MapView @JvmOverloads constructor(context: Context, attributeSet: Attribut
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        // Zoom controls
-        if (this.mapZoomControls.visibility != View.GONE) {
-            val childGravity = this.mapZoomControls.getZoomControlsGravity()
-            val childWidth = this.mapZoomControls.measuredWidth
-            val childHeight = this.mapZoomControls.measuredHeight
-
-            val childLeft: Int
-            when (childGravity and Gravity.HORIZONTAL_GRAVITY_MASK) {
-                Gravity.LEFT -> childLeft = left
-                Gravity.CENTER_HORIZONTAL -> childLeft = left + (right - left - childWidth) / 2
-                Gravity.RIGHT -> childLeft = right - childWidth
-                else -> childLeft = right - childWidth
-            }
-
-            val childTop: Int
-            when (childGravity and Gravity.VERTICAL_GRAVITY_MASK) {
-                Gravity.TOP -> childTop = top
-                Gravity.CENTER_VERTICAL -> childTop = top + (bottom - top - childHeight) / 2
-                Gravity.BOTTOM -> childTop = bottom - childHeight
-                else -> childTop = bottom - childHeight
-            }
-
-            this.mapZoomControls.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight)
-        }
-
         // Child views (besides zoom controls)
         val count = childCount
         for (i in 0 until count) {
             val child = getChildAt(i)
-            if (child == this.mapZoomControls) {
-                continue
-            }
             if (child.visibility != View.GONE && checkLayoutParams(child.layoutParams)) {
                 val params = child.layoutParams as MapView.LayoutParams
                 val childWidth = child.measuredWidth
@@ -280,7 +249,6 @@ class MapView @JvmOverloads constructor(context: Context, attributeSet: Attribut
             return false
         }
 
-        this.mapZoomControls.onMapViewTouchEvent(event)
         if (this.gestureDetectorExternal != null && this.gestureDetectorExternal!!.onTouchEvent(event)) {
             return true
         }
@@ -298,15 +266,6 @@ class MapView @JvmOverloads constructor(context: Context, attributeSet: Attribut
         } else {
             postInvalidate()
         }
-    }
-
-    /**
-     * Sets the visibility of the zoom controls.
-     *
-     * @param showZoomControls true if the zoom controls should be visible, false otherwise.
-     */
-    fun setBuiltInZoomControls(showZoomControls: Boolean) {
-        this.mapZoomControls.isShowMapZoomControls = showZoomControls
     }
 
     override fun setCenter(center: LatLong) {
@@ -330,12 +289,10 @@ class MapView @JvmOverloads constructor(context: Context, attributeSet: Attribut
 
     override fun setZoomLevelMax(zoomLevelMax: Byte) {
         this.model.mapViewPosition.zoomLevelMax = zoomLevelMax
-        this.mapZoomControls.setZoomLevelMax(zoomLevelMax)
     }
 
     override fun setZoomLevelMin(zoomLevelMin: Byte) {
         this.model.mapViewPosition.zoomLevelMin = zoomLevelMin
-        this.mapZoomControls.setZoomLevelMin(zoomLevelMin)
     }
 
     private val fpsCounter: FpsCounter
@@ -350,7 +307,7 @@ class MapView @JvmOverloads constructor(context: Context, attributeSet: Attribut
     /**
      * @return the zoom controls instance which is used in this MapView.
      */
-    val mapZoomControls: MapZoomControls
+//    val mapZoomControls: MapZoomControls
     private val model: Model
     private val scaleGestureDetector: ScaleGestureDetector
     val touchGestureHandler: TouchGestureHandler
@@ -380,8 +337,8 @@ class MapView @JvmOverloads constructor(context: Context, attributeSet: Attribut
         this.gestureDetector = GestureDetector(context, touchGestureHandler)
         this.scaleGestureDetector = ScaleGestureDetector(context, touchGestureHandler)
 
-        this.mapZoomControls = MapZoomControls(context, this)
-        this.addView(this.mapZoomControls, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        //this.mapZoomControls = MapZoomControls(context, this)
+        //this.addView(this.mapZoomControls, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         this.mapScaleBar = DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension,
                 GRAPHIC_FACTORY, this.model.displayModel)
         this.mapViewProjection = MapViewProjection(this)
