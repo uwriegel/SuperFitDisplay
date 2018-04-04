@@ -89,6 +89,10 @@ class MapView @JvmOverloads constructor(context: Context, attributeSet: Attribut
         setter.changeValue(true)
     }
 
+    fun onDoubleTab() {
+        setter.onDoubleTab()
+    }
+
     fun onMove() {
         setter.changeValue(false)
     }

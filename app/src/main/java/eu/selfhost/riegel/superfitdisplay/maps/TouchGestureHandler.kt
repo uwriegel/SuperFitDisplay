@@ -42,6 +42,9 @@ class TouchGestureHandler(private val mapView: MapView) : GestureDetector.Simple
     }
 
     override fun onDoubleTapEvent(e: MotionEvent): Boolean {
+
+        mapView.onDoubleTab()
+
         val action = e.actionMasked
         when (action) {
             MotionEvent.ACTION_DOWN -> this.isInDoubleTap = true

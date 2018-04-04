@@ -13,6 +13,7 @@ import eu.selfhost.riegel.superfitdisplay.R
 import eu.selfhost.riegel.superfitdisplay.maps.LocationSetter
 import eu.selfhost.riegel.superfitdisplay.maps.MapView
 import eu.selfhost.riegel.superfitdisplay.maps.TrackingLine
+import kotlinx.android.synthetic.main.map_fragment.*
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.rotation.RotateView
@@ -56,6 +57,14 @@ class MapsFragment : Fragment(), LocationSetter {
         mapView!!.onCenter()
     }
 
+    override fun onDoubleTab() {
+        withBearing = !withBearing
+        if (withBearing)
+            rotateView.heading = bearing
+        else
+            rotateView.heading = 0F
+    }
+
     override fun onPause() {
         mapView!!.model.save(this.preferencesFacade)
         this.preferencesFacade.save()
@@ -68,6 +77,11 @@ class MapsFragment : Fragment(), LocationSetter {
     }
 
     fun onLocation(location: Location) {
+        if (recentLocation != null)
+            bearing = recentLocation!!.bearingTo(location)
+        if (withBearing)
+            rotateView.heading = bearing
+
         recentLocation = location
         if (mapView != null) {
 
@@ -120,6 +134,8 @@ class MapsFragment : Fragment(), LocationSetter {
     private var followLocation = true
     private var recentLocation: Location? = null
     private val currentTrack = TrackingLine(AndroidGraphicFactory.INSTANCE)
+    private var withBearing = false
+    private var bearing = 0F
 
     private lateinit var center: LocationMarker
 }
