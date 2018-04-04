@@ -10,6 +10,12 @@ var Connection = (function () {
         }
     }
 
+    async function getTrack(trackNumber: string)  {
+        try {
+            return await invoke("getTrack", trackNumber) 
+        } catch{ }
+    }
+
     async function stop() {
         try {
             return await invoke("stop")
@@ -33,7 +39,8 @@ var Connection = (function () {
                     reject("")
             }
             xmlhttp.onerror = e => reject(e)
-            xmlhttp.open('GET', `http://localhost:9865/${method}`, true)
+            const paramString = param ? `/${param}` : ""
+            xmlhttp.open('GET', `http://localhost:9865/${method}${paramString}`, true)
             xmlhttp.responseType = 'json'
             xmlhttp.send(JSON.stringify(param))
         })
@@ -44,6 +51,7 @@ var Connection = (function () {
     return {
         checkConnection: checkConnection,
         initialize: initialize,
+        getTrack: getTrack,
         stop: stop
     }
 })()

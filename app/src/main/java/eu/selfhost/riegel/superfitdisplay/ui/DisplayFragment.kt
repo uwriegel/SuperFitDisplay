@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import eu.selfhost.riegel.superfitdisplay.LocationData
 import eu.selfhost.riegel.superfitdisplay.R
 
 class DisplayFragment : Fragment() {
@@ -37,9 +39,22 @@ class DisplayFragment : Fragment() {
                 location.latitude = latitude
                 (activity as DisplayActivity).getMapsFragment().onLocation(location)
             }
+
+            @JavascriptInterface
+            fun setTrack(trackString: String) {
+                //val g = Gson()
+                val affe = trackString
+                val aff = affe
+            }
         }, "Native")
 
-        displayWebView.loadUrl("file:///android_asset/display.html")
+        val trackNumber = activity!!.intent.getLongExtra("TrackNumber", -1)
+        if (trackNumber != -1L) {
+            (activity as DisplayActivity).pager?.currentItem = 1
+            displayWebView.loadUrl("file:///android_asset/display.html#$trackNumber")
+        }
+        else
+            displayWebView.loadUrl("file:///android_asset/display.html")
 
         return layout
     }

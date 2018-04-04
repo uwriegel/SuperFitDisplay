@@ -54,7 +54,7 @@ class MapsFragment : Fragment(), LocationSetter {
     }
 
     fun setLocationCenter() {
-        mapView!!.onCenter()
+        mapView?.onCenter()
     }
 
     override fun onDoubleTab() {

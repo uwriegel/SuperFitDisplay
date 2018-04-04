@@ -6,11 +6,14 @@ declare class DataEvent {
     location?: LocationData
 }
 
+declare class Track {
+    trackPoints: LocationData[]
+}
+
 declare class LocationData {
     longitude: Number
     latitude: Number
 }
-
 
 declare class SensorData {
     heartRate: number
@@ -23,18 +26,8 @@ declare class SensorData {
 }
 
 function onSensorData(evt: DataEvent) {
-
-
-
-    if (evt.location) {
-        var aff = evt.location.longitude
-        var affe = evt.location.latitude
-        console.log(`${aff} - ${affe}`)
-
-        Native.onLocation(aff, affe)
-    }
-        
-
+    if (evt.location) 
+        Native.onLocation(evt.location.longitude, evt.location.latitude)
 
     heartRateElement.innerText = evt.data.heartRate.toString()
     speedElement.innerText = evt.data.speed.toFixed(1)
@@ -86,3 +79,15 @@ const displayScroll = new IScroll('#display', {
 })
 
 Connection.initialize(data => onSensorData(data))
+
+if (location.hash) {
+    const trackNumber = location.hash.substring(1)
+    getTrack(trackNumber)
+}
+
+async function getTrack(trackNumber: string) {
+    const track = await Connection.getTrack(trackNumber) 
+    console.log(track)
+    Native.setTrack(JSON.stringify(track))
+}
+    
