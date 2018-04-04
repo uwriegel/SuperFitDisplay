@@ -1,6 +1,5 @@
 package eu.selfhost.riegel.superfitdisplay.ui
 
-import android.app.Activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -88,8 +87,6 @@ class DisplayActivity() : AppCompatActivity() {
                     or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
     }
-
-//    override fun onBackPressed() = displayWebView.loadUrl("javascript:onBackPressed()")
 
     //private var wakeLock: PowerManager.WakeLock? = null
     lateinit var pager: ViewPager
