@@ -15,6 +15,7 @@ import eu.selfhost.riegel.superfitdisplay.maps.LocationSetter
 import eu.selfhost.riegel.superfitdisplay.maps.MapView
 import eu.selfhost.riegel.superfitdisplay.maps.TrackingLine
 import kotlinx.android.synthetic.main.map_fragment.*
+import org.mapsforge.core.model.BoundingBox
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.rotation.RotateView
@@ -112,9 +113,37 @@ class MapsFragment : Fragment(), LocationSetter {
             for (locationData in locationsDatas)
                 loadedTrack!!.latLongs.add(LatLong(locationData.latitude, locationData.longitude))
 
+            zoomAndPan()
             currentTrack.requestRedraw()
         }
     }
+
+    private fun zoomAndPan() {
+        if (mapView == null)
+            return
+        val boundingBox = BoundingBox(loadedTrack!!.latLongs)
+        val width = mapView!!.width
+        val height = mapView!!.height
+        if (width <= 0|| height <= 0)
+            return
+        val centerPoint = LatLong((boundingBox.maxLatitude - boundingBox.minLatitude) / 2, (boundingBox.maxLongitude - boundingBox.minLongitude) / 2)
+        mapView!!.setCenter(centerPoint)
+
+//        val pointSouthWest = LatLong(boundingBox.minLatitude, boundingBox.minLongitude)
+//        val pointNorthEast = LatLong(boundingBox.maxLatitude, boundingBox.maxLongitude)
+//        val maxLevel = mapView!!.model.mapViewPosition.zoomLevelMax
+//
+//        val projection = mapView!!.mapViewProjection
+//        for (zoomlevel in 1..maxLevel) {
+//            mapView!!.setZoomLevel(zoomlevel.toByte())
+//            val sw = projection.toPixels(pointSouthWest)
+//            val ne = projection.toPixels(pointNorthEast)
+//            if (ne.x - sw.x > width || sw.y -ne.y > height) {
+//                mapView!!.setZoomLevel((zoomlevel - 1).toByte())
+//                break
+//            }
+//        }
+   }
 
     private fun createTileCaches() {
         this.tileCaches.add(AndroidUtil.createTileCache(activity, this.javaClass.simpleName,
