@@ -8,7 +8,7 @@ import org.mapsforge.core.util.MercatorProjection
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.layer.overlay.Polyline
 
-class TrackingLine(graphicFactory: GraphicFactory) : Polyline(null, graphicFactory) {
+class TrackingLine(graphicFactory: GraphicFactory, private val loadedTrack: Boolean) : Polyline(null, graphicFactory) {
 
     @Synchronized
     override fun draw(boundingBox: BoundingBox, zoomLevel: Byte, canvas: Canvas, topLeftPoint: Point) {
@@ -40,7 +40,7 @@ class TrackingLine(graphicFactory: GraphicFactory) : Polyline(null, graphicFacto
         val paint = AndroidGraphicFactory.INSTANCE.createPaint()
         paint.strokeWidth = 16F
         paint.setStyle(Style.STROKE)
-        paint.color = AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK)
+        paint.color = AndroidGraphicFactory.INSTANCE.createColor(if (loadedTrack) Color.BLUE else Color.BLACK)
         return paint
     }
 

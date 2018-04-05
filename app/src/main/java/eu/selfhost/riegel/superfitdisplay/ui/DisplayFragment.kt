@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import com.google.gson.Gson
 import eu.selfhost.riegel.superfitdisplay.LocationData
 import eu.selfhost.riegel.superfitdisplay.R
 
@@ -42,15 +43,15 @@ class DisplayFragment : Fragment() {
 
             @JavascriptInterface
             fun setTrack(trackString: String) {
-                //val g = Gson()
-                val affe = trackString
-                val aff = affe
+                val g = Gson()
+                val trackPoints = g.fromJson(trackString, Array<LocationData>::class.java)
+                (activity as DisplayActivity).getMapsFragment().loadTrack(trackPoints)
             }
         }, "Native")
 
         val trackNumber = activity!!.intent.getLongExtra("TrackNumber", -1)
         if (trackNumber != -1L) {
-            (activity as DisplayActivity).pager?.currentItem = 1
+            (activity as DisplayActivity).pager.currentItem = 1
             displayWebView.loadUrl("file:///android_asset/display.html#$trackNumber")
         }
         else

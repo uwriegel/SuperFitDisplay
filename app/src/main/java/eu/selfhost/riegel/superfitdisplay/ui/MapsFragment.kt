@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import eu.selfhost.riegel.superfitdisplay.LocationData
 import eu.selfhost.riegel.superfitdisplay.R
 import eu.selfhost.riegel.superfitdisplay.maps.LocationSetter
 import eu.selfhost.riegel.superfitdisplay.maps.MapView
@@ -99,6 +100,22 @@ class MapsFragment : Fragment(), LocationSetter {
         }
     }
 
+    fun loadTrack(locationsDatas: Array<LocationData>) {
+
+        if (loadedTrack != null)
+            mapView!!.layerManager!!.layers.remove(loadedTrack)
+
+        if (mapView != null) {
+            loadedTrack = TrackingLine(AndroidGraphicFactory.INSTANCE, true)
+            mapView!!.layerManager!!.layers.add((loadedTrack))
+
+            for (locationData in locationsDatas)
+                loadedTrack!!.latLongs.add(LatLong(locationData.latitude, locationData.longitude))
+
+            currentTrack.requestRedraw()
+        }
+    }
+
     private fun createTileCaches() {
         this.tileCaches.add(AndroidUtil.createTileCache(activity, this.javaClass.simpleName,
                 mapView!!.model.displayModel.tileSize, 1.0f,
@@ -133,7 +150,8 @@ class MapsFragment : Fragment(), LocationSetter {
     private var tileCaches: MutableList<TileCache> = ArrayList()
     private var followLocation = true
     private var recentLocation: Location? = null
-    private val currentTrack = TrackingLine(AndroidGraphicFactory.INSTANCE)
+    private val currentTrack = TrackingLine(AndroidGraphicFactory.INSTANCE, false)
+    private var loadedTrack: TrackingLine? = null
     private var withBearing = false
     private var bearing = 0F
 
