@@ -42,33 +42,8 @@ class TouchGestureHandler(private val mapView: MapView) : GestureDetector.Simple
     }
 
     override fun onDoubleTapEvent(e: MotionEvent): Boolean {
-
         mapView.onDoubleTab()
-
-        val action = e.actionMasked
-        when (action) {
-            MotionEvent.ACTION_DOWN -> this.isInDoubleTap = true
-            MotionEvent.ACTION_UP ->
-                // Quick scale in between (cancel double tap)
-                if (this.isInDoubleTap) {
-                    val mapViewPosition = this.mapView.model.mapViewPosition
-                    if (mapViewPosition.zoomLevel < mapViewPosition.zoomLevelMax) {
-                        val center = this.mapView.model.mapViewDimension.dimension.center
-                        val zoomLevelDiff: Byte = 1
-                        val moveHorizontal = (center.x - e.x) / Math.pow(2.0, zoomLevelDiff.toDouble())
-                        val moveVertical = (center.y - e.y) / Math.pow(2.0, zoomLevelDiff.toDouble())
-                        val pivot = this.mapView.mapViewProjection.fromPixels(e.x.toDouble(), e.y.toDouble())
-                        if (pivot != null) {
-                            mapViewPosition.pivot = pivot
-                            mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff)
-                        }
-                    }
-                    this.isInDoubleTap = false
-                    return true
-                }
-        }
-
-        return false
+        return true
     }
 
     override fun onDown(e: MotionEvent): Boolean {
