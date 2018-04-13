@@ -47,7 +47,7 @@ class DisplayFragment : Fragment() {
                 val trackPoints = g.fromJson(trackString, Array<LocationData>::class.java)
                 (activity as DisplayActivity).getMapsFragment().loadTrack(trackPoints)
             }
-        }, "Native")
+        }, "DisplayNative")
 
         val trackNumber = activity!!.intent.getLongExtra("TrackNumber", -1)
         if (trackNumber != -1L) {

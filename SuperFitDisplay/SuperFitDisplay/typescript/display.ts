@@ -29,22 +29,30 @@ function onSensorData(evt: DataEvent) {
     if (evt.location) 
         Native.onLocation(evt.location.longitude, evt.location.latitude)
 
-    heartRateElement.innerText = evt.data.heartRate.toString()
-    speedElement.innerText = evt.data.speed.toFixed(1)
-    distanceElement.innerText = evt.data.distance.toFixed(2)
-    cadenceElement.innerText = evt.data.cadence.toString()
-    maxSpeedElement.innerText = evt.data.maxSpeed.toFixed(1)
-    let timeSpan = evt.data.timeSpan
-    const hour = Math.floor(timeSpan / 3600)
-    timeSpan %= 3600
-    const minute = Math.floor(timeSpan / 60)
-    timeSpan %= 60
-    if (hour)
-        timeElement.innerText = `${hour}:${pad(minute, 2)}:${pad(timeSpan, 2)}`
-    else
-        timeElement.innerText = `${pad(minute, 2)}:${pad(timeSpan, 2)}`
-    
-    avgSpeedElement.innerText = evt.data.averageSpeed.toFixed(1)
+    if (evt.data.heartRate)
+        heartRateElement.innerText = evt.data.heartRate.toString()
+    if (evt.data.speed)
+        speedElement.innerText = evt.data.speed.toFixed(1)
+    if (evt.data.distance)
+        distanceElement.innerText = evt.data.distance.toFixed(2)
+    if (evt.data.cadence)
+        cadenceElement.innerText = evt.data.cadence.toString()
+    if (evt.data.maxSpeed)
+        maxSpeedElement.innerText = evt.data.maxSpeed.toFixed(1)
+    if (evt.data.timeSpan) {
+        let timeSpan = evt.data.timeSpan
+        const hour = Math.floor(timeSpan / 3600)
+        timeSpan %= 3600
+        const minute = Math.floor(timeSpan / 60)
+        timeSpan %= 60
+        if (hour)
+            timeElement.innerText = `${hour}:${pad(minute, 2)}:${pad(timeSpan, 2)}`
+        else
+            timeElement.innerText = `${pad(minute, 2)}:${pad(timeSpan, 2)}`
+    }
+
+    if (evt.data.averageSpeed)
+        avgSpeedElement.innerText = evt.data.averageSpeed.toFixed(1)
 
     if (evt.gpsActive) {
         const gps = document.getElementsByClassName("gps")[0]
